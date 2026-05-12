@@ -90,8 +90,11 @@ export async function fetchAlertLogs(limit = 20) {
  */
 export async function runAlertsNow() {
   const sb = requireSupabase();
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
   const { data, error } = await sb.functions.invoke('send-weather-alerts', {
-    body: { force: true },
+    body: { force: true, userId: user.id },
   });
 
   if (error) throw error;

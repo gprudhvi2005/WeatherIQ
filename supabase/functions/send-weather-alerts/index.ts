@@ -95,6 +95,7 @@ Deno.serve(async (req) => {
 
     const payload = req.method === 'POST' ? await req.json().catch(() => ({})) : {};
     const force = Boolean(payload?.force);
+    const requestedUserId = typeof payload?.userId === 'string' ? payload.userId : null;
 
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
       throw new Error('Missing Supabase service role configuration');
@@ -104,10 +105,16 @@ Deno.serve(async (req) => {
     }
 
     // Fetch all active alert preferences with email enabled
-    const { data: prefs, error: prefsError } = await supabase
+    let prefsQuery = supabase
       .from('weather_alert_preferences')
       .select('*')
       .eq('email_enabled', true);
+
+    if (requestedUserId) {
+      prefsQuery = prefsQuery.eq('user_id', requestedUserId);
+    }
+
+    const { data: prefs, error: prefsError } = await prefsQuery;
 
     if (prefsError) throw prefsError;
     if (!prefs || prefs.length === 0) {
