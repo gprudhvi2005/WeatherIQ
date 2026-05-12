@@ -168,6 +168,3 @@ The `vercel.json` handles SPA routing automatically.
 | [Nominatim](https://nominatim.org) | Reverse geocoding | 1 req/sec |
 | Gmail SMTP | Email alerts | 500 emails/day |
 
-## License
-
-MIT
