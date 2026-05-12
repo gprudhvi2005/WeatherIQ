@@ -35,7 +35,7 @@ A production-ready, full-stack weather intelligence web application built with *
 | Auth & DB | Supabase (Auth, PostgreSQL, Edge Functions) |
 | Weather API | Open-Meteo (free, no API key) |
 | Geocoding | Open-Meteo Geocoding + Nominatim |
-| Email | Resend (free tier) |
+| Email | Gmail SMTP (App Password) |
 | Deploy | Vercel |
 
 ## Quick Start
@@ -44,7 +44,7 @@ A production-ready, full-stack weather intelligence web application built with *
 - Node.js 18+
 - npm 9+
 - A [Supabase](https://supabase.com) project (free tier)
-- A [Resend](https://resend.com) account (optional, for email alerts)
+- A Gmail account with an App Password (optional, for email alerts)
 
 ### 1. Clone & Install
 
@@ -126,13 +126,19 @@ supabase/
 
 ### Deploy:
 1. Deploy the edge function: `supabase functions deploy send-weather-alerts`
-2. Set secrets:
+2. Set secrets in Supabase Edge Functions:
    ```bash
    supabase secrets set GMAIL_USER=yourname@gmail.com
    supabase secrets set GMAIL_APP_PASSWORD=xxxx-xxxx-xxxx-xxxx
+   supabase secrets set PROJECT_URL=https://your-project-ref.supabase.co
+   supabase secrets set SERVICE_ROLE_KEY=your-service-role-key
    ```
 3. Enable pg_cron and pg_net extensions in Supabase dashboard
 4. Run the cron SQL from `schema.sql` (uncomment the cron section)
+
+### Run Now (Manual Trigger)
+- The Alerts page has a “Run Now” button to trigger alerts immediately.
+- Manual runs are scoped to the logged-in user and bypass the 6-hour dedupe.
 
 ## Deployment (Vercel)
 
@@ -167,4 +173,5 @@ The `vercel.json` handles SPA routing automatically.
 | [Open-Meteo Geocoding](https://open-meteo.com/en/docs/geocoding-api) | City search | 10,000 req/day |
 | [Nominatim](https://nominatim.org) | Reverse geocoding | 1 req/sec |
 | Gmail SMTP | Email alerts | 500 emails/day |
+
 
